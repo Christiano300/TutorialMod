@@ -1,6 +1,7 @@
 package net.chris300.tutorialmod.block;
 
 import net.chris300.tutorialmod.TutorialMod;
+import net.chris300.tutorialmod.block.custom.JumpyBlock;
 import net.chris300.tutorialmod.item.ModCreativeModeTab;
 import net.chris300.tutorialmod.item.ModItems;
 import net.minecraft.util.valueproviders.UniformInt;
@@ -37,14 +38,23 @@ public class ModBlocks {
 			ModCreativeModeTab.TUTORIAL_TAB);
 
 
+	public static final RegistryObject<Block> JUMPY_BLOCK = registerBlock("jumpy_block",
+			() -> new JumpyBlock(BlockBehaviour.Properties.of(Material.STONE)
+					.strength(-1f)), ModCreativeModeTab.TUTORIAL_TAB);
+
+	private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, Item.Properties itemProperties) {
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+		registerBlockItem(name, toReturn, itemProperties);
+		return toReturn;
+	}
 	private static <T extends Block> RegistryObject<T> registerBlock(String name, Supplier<T> block, CreativeModeTab tab) {
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
-		registerBlockItem(name, toReturn, tab);
+		registerBlockItem(name, toReturn, new Item.Properties().tab(tab));
 		return toReturn;
 	}
 
-	private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, CreativeModeTab tab) {
-		return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties().tab(tab)));
+	private static <T extends Block> RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block, Item.Properties properties) {
+		return ModItems.ITEMS.register(name, () -> new BlockItem(block.get(), properties));
 	}
 
 	public static void register(IEventBus eventBus) {
